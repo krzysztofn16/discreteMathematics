@@ -1,5 +1,7 @@
 import sqlite3 as sl
 from sqlite3 import Error
+import os
+import itertools
 
 def create_connection(db_file):
     """ create a database connection to a SQLite database
@@ -86,8 +88,78 @@ def add_student(conn,student):
 
     return curr.lastrowid
 
+def delete_student(conn, surname):
+    """
+    Delete a student by surname
+    :param conn: Connection to the SQLite database
+    :param surname: surname of the student
+    :return:
+    """
+    sql = 'DELETE FROM tasks WHERE Nazwisko_ucznia=?'
+    #delete all rows 'DELETE FROM students'
+    cur = conn.cursor()
+    cur.execute(sql, (surname,))
+    conn.commit()
+
+def wariant5pytanie1(conn):
+    """
+    1.	Wybierz Nazwiska uczniów grupy IA-01, którzy otrzymali, 
+    i naucicieli, którzy wpisali, 
+    oceny 2 lub 5 z przedmiotów MD lub BD
+    """
+    # 1.Znajdź ID_przedmiotu bazując na Nazwa_przedmiotu
+    sql = 'SELECT rowid FROM subjects WHERE Nazwa_przedmiotu="MD" OR Nazwa_przedmiotu="BD"'
+    cur = conn.cursor()
+    cur.execute(sql)
+    id_przed = cur.fetchall()
+    # 2.Wyszukanie interesujących nas informacji. Zwraca wiersz z register spełniający oczekiwania
+    cur = conn.cursor()
+    cur.execute('SELECT ID_ucznia AND ID_nauczyciela FROM register WHERE (Ocena=2 OR Ocena=5)AND(ID_przedmiotu=? OR ID_przedmiotu=?)',(*id_przed[0],*id_przed[1]))
+    sql = cur.fetchall()
+    # 3.Wyciągnięcie ID_nauczyciela i ID_ucznia z wierszy db register
+    id_nauczyciela=[]
+    id_ucznia=[]
+    for elem in sql:
+        cur1 = conn.cursor()
+        cur1.execute('SELECT ID_nauczyciela FROM register WHERE rowid = ?',(*elem,))
+        id_nauczyciela.append(cur1.fetchall())
+        cur2 = conn.cursor()
+        cur2.execute('SELECT ID_ucznia FROM register WHERE rowid = ?',(*elem,))
+        id_ucznia.append(cur2.fetchall())
+    # 4.Sprawdzenie czy uczniowie należą do grupy IA-01 i wyciagniecie nazwisk
+    nazwisko_ucznia=[]
+    for elem in id_ucznia[0]:
+        cur = conn.cursor()
+        cur.execute('SELECT Nazwisko_ucznia FROM students WHERE Grupa="IA-01" AND rowid=?',(*elem,))
+        nazwisko_ucznia.append(cur.fetchall())
+    # 5. Wyciagniecie nazwisk nauczycieli
+    nazwisko_nauczyciela=[]
+    for elem in id_nauczyciela[0]:
+        cur = conn.cursor()
+        cur.execute('SELECT Nazwisko_nauczyciela FROM teachers WHERE rowid=?',(*elem,))
+        nazwisko_nauczyciela.append(cur.fetchall())
+
+    nazwisko_ucznia = list(itertools.chain.from_iterable(nazwisko_ucznia))
+    nazwisko_nauczyciela = list(itertools.chain.from_iterable(nazwisko_nauczyciela))
+    return print("Uczeniowie to: \n"+str(*nazwisko_ucznia)+", \na nauczyciele to: \n"+str(*nazwisko_nauczyciela)+".") 
+
+def wariant5pytanie2(conn):
+    """
+    Wybierz ID i nazwiska naucicieli, którzy wpisali oceny 2 lub 5 uczniom grupy IA-01.
+    """
+def wariant5pytanie3(conn):
+    """
+    Wybierz nazwy i ID przedmiotów, z których uczniów grupy IA-01 otrzymali od naucicieli Telenyka lub Czaikowskiego oceny od 3. 
+    """
+def wariant5pytanie4(conn):
+    """
+    Wybierz ID i nazwiska uczniow, którzym wpisane oceny od 3.5 do 4.5.
+    """
 def main():
-    database = r"C:\Users\krzys\PK\matDyskretna\projekt1\my_school.db"
+    path = os.getcwd()
+    database = os.path.join(path,"my_school.db")
+    #create database connection
+    conn = create_connection(database)
 
     sql_create_register_table = """CREATE TABLE IF NOT EXISTS register (
                                     ID_ucznia integer NOT NULL,
@@ -117,76 +189,75 @@ def main():
                                     Grupa text NOT NULL
                                 );    
                                 """
-    #create database connection
-    conn = create_connection(database)
 
-    # create tables
-    if conn is not None:
-        create_table(conn,sql_create_register_table)
-        create_table(conn,sql_create_teachers_table)
-        create_table(conn,sql_create_subjects_table)
-        create_table(conn,sql_create_students_table)
-    else:
-        print("Error! cannot create the database cennection.")
+    # # create tables
+    # if conn is not None:
+    #     create_table(conn,sql_create_register_table)
+    #     create_table(conn,sql_create_teachers_table)
+    #     create_table(conn,sql_create_subjects_table)
+    #     create_table(conn,sql_create_students_table)
+    # else:
+    #     print("Error! cannot create the database cennection.")
 
-    with conn:
-        #create new teacher
-        teacher1 = (43,'Drabovski');
-        teacher2 = (42,'Czajkowski');
-        teacher3 = (44,'Dorota');
-        teacher4 = (41,'Telenyk');
+    # with conn:
+    #     #create new teacher
+    #     teacher1 = (43,'Drabovski');
+    #     teacher2 = (42,'Czajkowski');
+    #     teacher3 = (44,'Dorota');
+    #     teacher4 = (41,'Telenyk');
 
-        teacher1 = add_teacher(conn,teacher1)
-        teacher2 = add_teacher(conn,teacher2)
-        teacher3 = add_teacher(conn,teacher3)
-        teacher4 = add_teacher(conn,teacher4)
+    #     teacher1 = add_teacher(conn,teacher1)
+    #     teacher2 = add_teacher(conn,teacher2)
+    #     teacher3 = add_teacher(conn,teacher3)
+    #     teacher4 = add_teacher(conn,teacher4)
 
-        #create new subject
-        subject1 = (101,'MD');
-        subject2 = (102,'BD');
-        subject3 = (103,'SO');
-        subject4 = (104,'ISI');
+    #     #create new subject
+    #     subject1 = (101,'MD');
+    #     subject2 = (102,'BD');
+    #     subject3 = (103,'SO');
+    #     subject4 = (104,'ISI');
 
-        subject1 = add_subject(conn,subject1)
-        subject2 = add_subject(conn,subject2)
-        subject3 = add_subject(conn,subject3)
-        subject4 = add_subject(conn,subject4)
+    #     subject1 = add_subject(conn,subject1)
+    #     subject2 = add_subject(conn,subject2)
+    #     subject3 = add_subject(conn,subject3)
+    #     subject4 = add_subject(conn,subject4)
 
-        #create new  student
-        student1 = (1,'Nowacki','Andrzej',2000,'IA-01');
-        student2 = (2,'Mazur','Anna',2001,'IA-01');
-        student3 = (3,'Pawlowski','Piotr',2002,'IB-01');
-        student4 = (4,'Zajac','Anna',2001,'IC-01');
-        student5 = (5,'Król','Marzena',2000,'IC-01');
-        student6 = (6,'Tomczyk','Witold',2002,'IA-01');
+    #     #create new  student
+    #     student1 = (1,'Nowacki','Andrzej',2000,'IA-01');
+    #     student2 = (2,'Mazur','Anna',2001,'IA-01');
+    #     student3 = (3,'Pawlowski','Piotr',2002,'IB-01');
+    #     student4 = (4,'Zajac','Anna',2001,'IC-01');
+    #     student5 = (5,'Król','Marzena',2000,'IC-01');
+    #     student6 = (6,'Tomczyk','Witold',2002,'IA-01');
 
-        student1 = add_student(conn,student1)
-        student2 = add_student(conn,student2)
-        student3 = add_student(conn,student3)
-        student4 = add_student(conn,student4)
-        student5 = add_student(conn,student5)
-        student6 = add_student(conn,student6)
+    #     student1 = add_student(conn,student1)
+    #     student2 = add_student(conn,student2)
+    #     student3 = add_student(conn,student3)
+    #     student4 = add_student(conn,student4)
+    #     student5 = add_student(conn,student5)
+    #     student6 = add_student(conn,student6)
 
-        #create register
-        register1 = (student1,subject1,teacher4,'11.01.18',5);
-        register2 = (student1,subject2,teacher2,'15.01.18',4);
-        register3 = (student2,subject1,teacher4,'11.01.18',3);
-        register4 = (student2,subject2,teacher2,'15.01.18',4);
-        register5 = (student3,subject3,teacher1,'22.01.18',3.5);
-        register6 = (student3,subject2,teacher2,'15.01.18',4);
-        register7 = (student1,subject3,teacher1,'22.01.18',4);
-        register8 = (student2,subject3,teacher1,'22.01.18',5);
+    #     #create register
+    #     register1 = (student1,subject1,teacher4,'11.01.18',5);
+    #     register2 = (student1,subject2,teacher2,'15.01.18',4);
+    #     register3 = (student2,subject1,teacher4,'11.01.18',3);
+    #     register4 = (student2,subject2,teacher2,'15.01.18',4);
+    #     register5 = (student3,subject3,teacher1,'22.01.18',3.5);
+    #     register6 = (student3,subject2,teacher2,'15.01.18',4);
+    #     register7 = (student1,subject3,teacher1,'22.01.18',4);
+    #     register8 = (student2,subject3,teacher1,'22.01.18',5);
 
-        register1 = add_register(conn,register1)
-        register2 = add_register(conn,register2)
-        register3 = add_register(conn,register3)
-        register4 = add_register(conn,register4)
-        register5 = add_register(conn,register5)
-        register6 = add_register(conn,register6)
-        register7 = add_register(conn,register7)
-        register8 = add_register(conn,register8)
+    #     register1 = add_register(conn,register1)
+    #     register2 = add_register(conn,register2)
+    #     register3 = add_register(conn,register3)
+    #     register4 = add_register(conn,register4)
+    #     register5 = add_register(conn,register5)
+    #     register6 = add_register(conn,register6)
+    #     register7 = add_register(conn,register7)
+    #     register8 = add_register(conn,register8)
 
-        
+    wynik = wariant5pytanie1(conn)  
+         
 
 if __name__ == '__main__':
     main()
