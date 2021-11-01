@@ -141,7 +141,7 @@ def wariant5pytanie1(conn):
 
     nazwisko_ucznia = list(itertools.chain.from_iterable(nazwisko_ucznia))
     nazwisko_nauczyciela = list(itertools.chain.from_iterable(nazwisko_nauczyciela))
-    return print("Uczeniowie to: \n"+str(*nazwisko_ucznia)+", \na nauczyciele to: \n"+str(*nazwisko_nauczyciela)+".") 
+    return "Uczeniowie to: \n"+str(*nazwisko_ucznia)+", \na nauczyciele to: \n"+str(*nazwisko_nauczyciela)+"."
 
 def wariant5pytanie2(conn):
     """
@@ -256,7 +256,7 @@ def main():
     #     register7 = add_register(conn,register7)
     #     register8 = add_register(conn,register8)
 
-    wynik = wariant5pytanie1(conn)  
+    print(wariant5pytanie1(conn))
          
 
 if __name__ == '__main__':
