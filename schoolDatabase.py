@@ -141,20 +141,94 @@ def wariant5pytanie1(conn):
 
     nazwisko_ucznia = list(itertools.chain.from_iterable(nazwisko_ucznia))
     nazwisko_nauczyciela = list(itertools.chain.from_iterable(nazwisko_nauczyciela))
-    return "Uczeniowie to: \n"+str(*nazwisko_ucznia)+", \na nauczyciele to: \n"+str(*nazwisko_nauczyciela)+"."
+    return "Uczeniowie to: \n"+str(nazwisko_ucznia)+", \na nauczyciele to: \n"+str(nazwisko_nauczyciela)+"."
 
 def wariant5pytanie2(conn):
     """
     Wybierz ID i nazwiska naucicieli, którzy wpisali oceny 2 lub 5 uczniom grupy IA-01.
     """
+    # 1.Wybrać uczniów, którzy należą do grupy 'IA-01'
+    cur = conn.cursor()
+    cur2 = conn.cursor()
+    cur.execute('SELECT ID_ucznia FROM students WHERE Grupa="IA-01"')
+    IAstudents = cur.fetchall()
+    # 2.Wybrać nauczycieli, którzy dali ocene 2 lub 5 dla uczniów z grupy 'IA-01'
+    rowIDNauczyciela=[]
+    for student in IAstudents:
+        cur.execute('SELECT ID_nauczyciela FROM register WHERE (Ocena=2 OR Ocena=5)AND(ID_ucznia=?)',(*student,))
+        rowIDNauczyciela.append(cur.fetchall())
+    rowIDNauczyciela = list(itertools.chain.from_iterable(rowIDNauczyciela)) #moreover, it remove empy position in list
+    # 3.Wybrać naziwska i ID nauczycieli, którzy zostali wcześniej wybrani
+    nazw_naucz=[]
+    id_naucz=[]
+    for rowid in rowIDNauczyciela:
+        cur.execute('SELECT Nazwisko_nauczyciela FROM teachers WHERE rowid=?',(*rowid,))
+        cur2.execute('SELECT ID_nauczyciela FROM teachers WHERE rowid=?',(*rowid,))
+        nazw_naucz.append(cur.fetchall())
+        id_naucz.append(cur2.fetchall())
+    nazw_naucz=list(itertools.chain.from_iterable(nazw_naucz))
+    id_naucz=list(itertools.chain.from_iterable(id_naucz))
+    return "Szukani nauczyciele to: \n"+str(nazw_naucz)+"\nO odpowienim ID:\n"+str(id_naucz)+"."
+    
 def wariant5pytanie3(conn):
     """
     Wybierz nazwy i ID przedmiotów, z których uczniów grupy IA-01 otrzymali od naucicieli Telenyka lub Czaikowskiego oceny od 3. 
     """
+    # 1.Wybrać uczniów, którzy należą do grupy 'IA-01'
+    cur = conn.cursor()
+    cur2 = conn.cursor()
+    cur.execute('SELECT ID_ucznia FROM students WHERE Grupa="IA-01"')
+    IAstudents = cur.fetchall()
+    # 2.Wybrać ID nauczyciela Telenyk i Czaikowski
+    cur.execute('SELECT rowid FROM teachers WHERE Nazwisko_nauczyciela="Telenyk" OR Nazwisko_nauczyciela="Czajkowski"')
+    rowIDnaucz = cur.fetchall()
+    # 3.Wybrać rowid przedmiotu względem, uczniów, naucz i ocen.
+    IDprzed=[]
+    for IDucz in IAstudents:
+        for IDnau in rowIDnaucz:
+            cur.execute('SELECT ID_przedmiotu FROM register WHERE ID_ucznia=? AND ID_Nauczyciela=? AND Ocena>=3',(*IDucz,*IDnau,))
+            IDprzed.append(cur.fetchall())
+    IDprzed=list(itertools.chain.from_iterable(IDprzed))
+    actIDprzed=[]
+    [actIDprzed.append(elem) for elem in IDprzed if elem not in actIDprzed]
+    # 4.Wybrać nazwę i ID_przedmiotów
+    nazw_przed=[]
+    id_przed=[]
+    for rowid in actIDprzed:
+        cur.execute('SELECT Nazwa_przedmiotu FROM subjects WHERE rowid=?',(*rowid,))
+        cur2.execute('SELECT ID_przedmiotu FROM subjects WHERE rowid=?',(*rowid,))
+        nazw_przed.append(cur.fetchall())
+        id_przed.append(cur2.fetchall())
+    nazw_przed=list(itertools.chain.from_iterable(nazw_przed))
+    id_przed=list(itertools.chain.from_iterable(id_przed))
+    return "Szukane przedmioty to: \n"+str(nazw_przed)+"\no odpowienim ID:\n"+str(id_przed)+"."
+
 def wariant5pytanie4(conn):
     """
     Wybierz ID i nazwiska uczniow, którzym wpisane oceny od 3.5 do 4.5.
     """
+    # 1.Wybierz ID ucznia w zakresie ocen
+    cur = conn.cursor()
+    cur2 = conn.cursor()
+    cur.execute('SELECT ID_ucznia FROM register WHERE Ocena>=3.5 AND Ocena<=4.5')
+    rowID=cur.fetchall()
+    # 2.Wybrać nazwę i ID_przedmiotów
+    nazw_ucznia=[]
+    id_ucznia=[]
+    for rowid in rowID:
+        cur.execute('SELECT Nazwisko_ucznia FROM students WHERE rowid=?',(*rowid,))
+        cur2.execute('SELECT ID_ucznia FROM students WHERE rowid=?',(*rowid,))
+        nazw_ucznia.append(cur.fetchall())
+        id_ucznia.append(cur2.fetchall())
+    nazw_ucznia=list(itertools.chain.from_iterable(nazw_ucznia))
+    id_ucznia=list(itertools.chain.from_iterable(id_ucznia))
+    
+    actNazw_ucznia=[]
+    actID_ucznia=[]
+    [actNazw_ucznia.append(elem) for elem in nazw_ucznia if elem not in actNazw_ucznia]
+    [actID_ucznia.append(elem) for elem in id_ucznia if elem not in actID_ucznia]
+
+    return "Lista uczniów z ocenami w zakresie to: \n"+str(actNazw_ucznia)+"\no odpowiednim ID:\n"+str(actID_ucznia)+"."
 def main():
     path = os.getcwd()
     database = os.path.join(path,"my_school.db")
@@ -256,7 +330,10 @@ def main():
     #     register7 = add_register(conn,register7)
     #     register8 = add_register(conn,register8)
 
-    print(wariant5pytanie1(conn))
+    print("\nPytanie 1:\n"+wariant5pytanie1(conn))
+    print("\nPytanie 2:\n"+wariant5pytanie2(conn))
+    print("\nPytanie 3:\n"+wariant5pytanie3(conn))
+    print("\nPytanie 4:\n"+wariant5pytanie4(conn))
          
 
 if __name__ == '__main__':
