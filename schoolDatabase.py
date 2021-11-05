@@ -101,6 +101,17 @@ def delete_student(conn, surname):
     cur.execute(sql, (surname,))
     conn.commit()
 
+def displayDB(conn):
+    curr = conn.cursor()
+    curr.execute('SELECT * FROM  register')
+    print("Register:\n"+str(curr.fetchall())+"\n")
+    curr.execute('SELECT * FROM students')
+    print("Students:\n"+str(curr.fetchall())+"\n")
+    curr.execute('SELECT * FROM teachers')
+    print("Teacherss:\n"+str(curr.fetchall())+"\n")
+    curr.execute('SELECT * FROM subjects')
+    print("Subjects:\n"+str(curr.fetchall())+"\n")
+
 def wariant5pytanie1(conn):
     """
     1.	Wybierz Nazwiska uczniów grupy IA-01, którzy otrzymali, 
@@ -329,6 +340,8 @@ def main():
     #     register6 = add_register(conn,register6)
     #     register7 = add_register(conn,register7)
     #     register8 = add_register(conn,register8)
+
+    displayDB(conn)
 
     print("\nPytanie 1:\n"+wariant5pytanie1(conn))
     print("\nPytanie 2:\n"+wariant5pytanie2(conn))
