@@ -275,7 +275,7 @@ def main():
                                 );    
                                 """
 
-    # # create tables
+    # create tables
     # if conn is not None:
     #     create_table(conn,sql_create_register_table)
     #     create_table(conn,sql_create_teachers_table)
