@@ -35,7 +35,13 @@ class Logic_func{
     //access specifier
     //data members
     //member functions
+    private:
     public:
+    vector<bool> f_result;
+    Logic_func(vector<bool>function_result){
+        f_result = function_result;
+    }
+    
     bool to_bool(char const& s) {
         return s != '0';
     }
@@ -54,22 +60,60 @@ class Logic_func{
             vec.push_back(v1);
         }
     }
+    string basic_logic_function(vector<vector<bool>> &truth_table, vector<bool> &function_result){
+        string result;
+        for(int i=0;i<function_result.size();i++){
+            if(function_result[i]==1){
+                for(int j=0;j<am_ARG_FUNC;j++){
+                    string sign;
+                    switch (j)
+                    {
+                    case 0:
+                        sign="A";
+                        break;
+                    case 1:
+                        sign="B";
+                        break;
+                    case 2:
+                        sign="C";
+                        break;
+                    default:
+                        cout<<("Update functionality for more arguments !.")<<endl;
+                        break;
+                    }
+                    if(truth_table[i][j]==1){
+                        result.append(sign);
+                    }
+                    else{
+                        result.append("n");
+                        result.append(sign);
+                    }
+                    result.append("*");
+                }
+                if(i==function_result.size()-1)break;
+                result.append("+");
+            }
+        }
+        return result;
+    }
+    string display_simplified_logic_function(){
+        return "simplified_logic_sentence";
+    }
     void display_tt(vector<vector<bool>> &vec){
+        cout<<"Truth table for "<<am_ARG_FUNC<<" arguments.\n";
         for (int i = 0; i < vec.size(); i++) {
             for (int j = 0; j < vec[i].size(); j++)
                 cout << vec[i][j] << " ";
             cout << endl;
         }
     }
+    void display_res(){
+        cout<<"Result of logic function:\n";
+        for(int i=0;i<f_result.size();i++){
+            cout<<f_result[i]<<endl;
+        }
+    }
 };
-// void generate(int n, std::vector< std::vector<int> >& vec) {
-//     vec.resize(n, std::vector<int>(1 << n, 0));
-// }
-
-// int main() {
-//     std::vector< std::vector<int> > v;
-//     generate(10, v);
-// }
 int main(){
     //create vector
     // vector<bool> v = {1, 0,1};
@@ -80,10 +124,12 @@ int main(){
     // }
     // cout<<"}; \n";
     
-    Logic_func f1;
+    Logic_func f1({1,0,0,1,1,0,0,1});
     vector<vector<bool>> v;
     f1.generate_tt(v);
     f1.display_tt(v);
+    f1.display_res();
+    cout<<f1.basic_logic_function(v,f1.f_result)<<endl;
 
     return 0;
 }
