@@ -64,6 +64,7 @@ class Logic_func{
                         result.append("n");
                         result.append(sign);
                     }
+                    if(j==am_ARG_FUNC-1)break;
                     result.append("*");
                 }
                 if(i==function_result.size()-1)break;
@@ -74,7 +75,7 @@ class Logic_func{
         return result;
     }
     string simplified_logic_function(){
-        return "simplified_logic_sentence";
+        return "TO_DO";
     }
     bool calculate_output(vector<bool> input_values){
         logic_f.replace(logic_f.begin(),logic_f.end(),"nA",!input_values[0]);//implement ASCI table
@@ -83,6 +84,12 @@ class Logic_func{
         logic_f.replace(logic_f.begin(),logic_f.end(),'B',input_values[1]);
         logic_f.replace(logic_f.begin(),logic_f.end(),"nC",!input_values[2]);
         logic_f.replace(logic_f.begin(),logic_f.end(),'C',input_values[2]);
+    //generate new string based on input string
+        for(int i=0;i<logic_f.size();i++){
+            if(int(logic_f[i])==int('n')){
+
+            }
+        }
 
         for(int i=0;i<logic_f.size();i+=2){
             if(logic_f[i+1]=='*'){
