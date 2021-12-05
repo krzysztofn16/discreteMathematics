@@ -75,21 +75,62 @@ class Logic_func{
         return result;
     }
     string simplified_logic_function(){
+        //done first step ABC+nABC -> (A+nA)BC -> 1BC
+        string result;
+        size_t next_part=0;
+        for(int i=65;i<65+am_ARG_FUNC;i++){
+            for(int j=0;j<logic_f.size();j++){
+                if((int(logic_f[j])==i)&&(logic_f[j-1]==0 || logic_f[j-1]!='n')){
+                    //positive arg
+                    for(int k=am_ARG_FUNC;k>0;k--){
+                        int tmp = k;
+                        while(tmp>0){
+                            next_part = logic_f.find('+',0+next_part);
+                            if(logic_f.substr(j,next_part-1) == logic_f.substr(next_part+2, next_part+2+(next_part-1-j))){
+                                //witedown info to new logic_f string
+                                result.append(logic_f.substr(j,next_part-1));
+                                break;
+                            }
+                            tmp-=1;
+                        }
+                        result.append(next_part);
+                    }
+                }else if(logic_f[j-1]=='n'){
+                    //negative arg
+                    for(int k=am_ARG_FUNC;k>0;k--){
+                        int tmp = k;
+                        while(tmp>0){
+                            next_part = logic_f.find('+',0+next_part);
+                            if(logic_f.substr(j,next_part-1) == logic_f.substr(next_part+2, next_part+2+(next_part-1-j))){
+                                //witedown info to new logic_f string
+                                result.append(logic_f.substr(j,next_part-1));
+                                break;
+                            }
+                            tmp-=1;
+                        }
+                        result.append(logic_f.find(j,));
+                    }
+                }
+            }
+
+        }
         return "TO_DO";
     }
     bool calculate_output(vector<bool> input_values){
+    //                      NEED TO WORK ON COPY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        string upd_logic_func;
         logic_f.replace(logic_f.begin(),logic_f.end(),"nA",!input_values[0]);//implement ASCI table
         logic_f.replace(logic_f.begin(),logic_f.end(),'A',input_values[0]);
         logic_f.replace(logic_f.begin(),logic_f.end(),"nB",!input_values[1]);
         logic_f.replace(logic_f.begin(),logic_f.end(),'B',input_values[1]);
         logic_f.replace(logic_f.begin(),logic_f.end(),"nC",!input_values[2]);
         logic_f.replace(logic_f.begin(),logic_f.end(),'C',input_values[2]);
-    //generate new string based on input string
-        for(int i=0;i<logic_f.size();i++){
-            if(int(logic_f[i])==int('n')){
+    // //generate new string based on input string
+    //     for(int i=0;i<logic_f.size();i++){
+    //         if(int(logic_f[i])==int('n')){
 
-            }
-        }
+    //         }
+    //     }
 
         for(int i=0;i<logic_f.size();i+=2){
             if(logic_f[i+1]=='*'){
