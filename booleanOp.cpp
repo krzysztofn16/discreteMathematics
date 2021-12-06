@@ -37,7 +37,6 @@ int main(){
     cout<<f1.basic_logic_function(v,f1.f_result)<<endl; 
     int res = f1.calculate_output({0,0,0});
     cout<<"result of 0,0,0 values: "<<res<<endl;
-    cout<<f1.logic_f<<endl;
 
     return 0;
 }
