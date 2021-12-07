@@ -77,12 +77,20 @@ private:
 
 int main()
 {
-    Graph graph(4);
+    Graph graph(7);
     //{direct, undirect}
-    graph.addEdge(1, 2, "undirect");
+    graph.addEdge(1, 2, "direct");
+    graph.addEdge(1, 4, "direct");
     graph.addEdge(1, 3, "direct");
-    graph.addEdge(2, 3, "undirect");
-    graph.addEdge(3, 4, "undirect");
+    graph.addEdge(2, 4, "direct");
+    graph.addEdge(2, 5, "direct");
+    graph.addEdge(3, 4, "direct");
+    graph.addEdge(3, 6, "direct");
+    graph.addEdge(4, 5, "direct");
+    graph.addEdge(4, 7, "direct");
+    graph.addEdge(4, 6, "direct");
+    graph.addEdge(5, 7, "direct");
+    graph.addEdge(6, 7, "direct");
 
     cout<<"Adjucent matrix"<<endl;
     graph.display_matrix();
