@@ -36,4 +36,18 @@ Steps to run program.<br />
   More is [here](https://www.sqlitetutorial.net/sqlite-python/)
   
 ## Project 2
+Project is working on example in main file. Example below:
+
+  A B C - y<br />
+  0 0 0 - 1  
+  0 0 1 - 0  
+  0 1 0 - 0  
+  0 1 1 - 1  
+  1 0 0 - 1   
+  1 0 1 - 0  
+  1 1 0 - 0  
+  1 1 1 - 1  
+
 ## Project 3
+Program implementing functions to build adjucent graph. It help for present graph theory.<br /> 
+It has possible to design weight matrix, which present weight of every connection in design graph.
