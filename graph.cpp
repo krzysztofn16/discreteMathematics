@@ -1,9 +1,3 @@
-/*
- * napisać program w dowolnym języku programowania, który implementuje takie funkcje: 
- * wprowadznie grafów wybranego typu, podanych przez macierz sąsiedztwa lub incydentności (a dla grafów ważonych dodatkowe wprowadzenie wartości wag); 
- * implementację wybranego algorytmu dla powyższego typu grafów; 
- * zademonstrować skuteczność programu na rozszerzonej wersji jednego z poniższych grafów: 
- */
 
 #include <iostream>
 #include <vector>

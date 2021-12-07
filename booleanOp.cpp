@@ -1,29 +1,3 @@
-/*
-napisać program w dowolnym języku programowania, który implementuje takie funkcje: 
-wprowadznie funkcji boolowskich n zmiennych podanych w tabelach; 
-konstruowanie wyrażenia boolowskiego, które odpowiada wprowadzonej funkcji boolowskiej; 
-optymalizowanie wyrażeń boolowskich; 
-konstruowanie sieci logicznych, które realizują optymalizowane wyrażenia boolowskie (konstruowanie sieci logicznych dla zoptymalizowanych wyrażeń 
-może być wykonywane w dostępnym oprogramowaniu). 
-
-zademonstrować skuteczność programu w stosunku do swego wariantu 5 zadania. 
-0 0    0 0 0 - 1  0 0 0 0
-0 1    0 0 1 - 0  0 0 0 1
-1 0    0 1 0 - 0  0 0 1 0
-1 1    0 1 1 - 1  0 0 1 1
-       1 0 0 - 1  0 1 0 0 
-       1 0 1 - 0  0 1 0 1
-       1 1 0 - 0  0 1 1 0
-       1 1 1 - 1  0 1 1 1
-                  1 0 0 0
-                  1 0 0 1
-                  1 0 1 0
-                  1 0 1 1
-                  1 1 0 0
-                  1 1 0 1
-                  1 1 1 0
-                  1 1 1 1
-*/  
 
 #include "Logic_func.h"
 using namespace std;
