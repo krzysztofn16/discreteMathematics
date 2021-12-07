@@ -93,7 +93,7 @@ class Logic_func{
                             }
                             tmp-=1;
                         }
-                        result.append(next_part);
+                        // result.append(next_part);
                     }
                 }else if(logic_f[j-1]=='n'){
                     //negative arg
@@ -108,7 +108,7 @@ class Logic_func{
                             }
                             tmp-=1;
                         }
-                        result.append(logic_f.find(j,));
+                        // result.append(logic_f.find(j,));
                     }
                 }
             }
